@@ -25,6 +25,8 @@ class RestaurantManager:
         self._next_available_id += 1
         self._restaurants.append(restaurant)
 
+        self._write_restaurants_to_file()
+
         return restaurant.get_id()
 
     def get_restaurant_by_id(self, id):
@@ -70,6 +72,7 @@ class RestaurantManager:
 
         if self.restaurant_exists(id):
             self._restaurants.remove(self.get_restaurant_by_id(id))
+            self._write_restaurants_to_file()
         else:
             raise Exception('Restaurant with id %s does not exist' % id)
 
@@ -82,6 +85,7 @@ class RestaurantManager:
         if temp_restaurant != None:
             self._restaurants.remove(temp_restaurant)
             self._restaurants.append(restaurant)
+            self._write_restaurants_to_file()
         else:
             raise Exception('Restaurant update failed')
 
