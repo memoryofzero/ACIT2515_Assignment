@@ -52,3 +52,7 @@ class AbstractRestaurant:
     def get_type(self):
         """returns type of the restaurant"""
         raise NotImplementedError
+
+    def to_dict(self):
+        """return a dictionary respresentation of the object"""
+        raise NotImplementedError

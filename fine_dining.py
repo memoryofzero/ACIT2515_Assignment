@@ -1,10 +1,11 @@
 from abstract_restaurant import AbstractRestaurant
 
-RESTAURANT_TYPE = 'fine dining'
 
 
 class FineDining(AbstractRestaurant):
     """specific type of restaurant, fine dining"""
+
+    RESTAURANT_TYPE = 'fine dining'
 
     def __init__(self, name, num_employees, location, year_opened, num_michelin_stars, chef_name):
         """construct fine dining restaurant"""
@@ -32,11 +33,18 @@ class FineDining(AbstractRestaurant):
     def get_details(self):
         """returns brief description"""
         return "{} ({} Michelin Stars) was opened in {} at {}. It has {} employees, with {} as chef.".format(self._name,
-                                                                                                             str(
-                                                                                                                 self._num_michelin_stars),
-                                                                                                             str(
-                                                                                                                 self._year_opened),
+                                                                                                             str(self._num_michelin_stars),
+                                                                                                             str(self._year_opened),
                                                                                                              self._location,
-                                                                                                             str(
-                                                                                                                 self._num_employees),
+                                                                                                             str(self._num_employees),
                                                                                                              self._chef_name)
+
+    def to_dict(self):
+        """return a dictionary representation of the restaurant"""
+        fine_dining = {"name": self._name,
+                       "num_employees": self._num_employees,
+                       "location": self._location,
+                       "year_opened": self._year_opened,
+                       "num_michelin_stars": self._num_michelin,
+                       "chef_name": self._chef_name}
+        return fine_dining

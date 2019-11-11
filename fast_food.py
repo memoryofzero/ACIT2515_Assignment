@@ -1,10 +1,11 @@
 from abstract_restaurant import AbstractRestaurant
 
-RESTAURANT_TYPE = 'fast food'
 
 
 class FastFood(AbstractRestaurant):
     """specific type of restaurant, fine dining"""
+
+    RESTAURANT_TYPE = 'fast food'
 
     def __init__(self, name, num_employees, location, year_opened, num_locations, has_drivethrough):
         """construct fast food restaurant"""
@@ -44,3 +45,13 @@ class FastFood(AbstractRestaurant):
                 self._location,
                 str(self._num_employees),
                 str(self._num_locations), )
+
+    def to_dict(self):
+        """returns a dictionary representation of the restaurant"""
+        fast_food = {"name": self._name,
+                     "num_employees": self._employees,
+                     "location": self._location,
+                     "year_opened": self.year_opened,
+                     "num_locations": self.num_locations,
+                     "has_drivethrough": self.has_drivethrough}
+        return fast_food

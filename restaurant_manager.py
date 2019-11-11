@@ -1,12 +1,20 @@
 from abstract_restaurant import AbstractRestaurant
 from restaurant_stats import RestaurantStats
+from fast_food import FastFood
+from fine_dining import FineDining
+import json
 
 class RestaurantManager:
+    """defines a class to manage restaurants"""
 
-    def __init__(self):
+    def __init__(self, filepath):
         """initialize restaurant manager"""
-        self._restaurants = []
+        if filepath is None or type(filepath) != str:
+            raise ValueError("Invalid filepath")
         self._next_available_id = int(0)
+        self._restaurants = []
+        self._filepath = filepath
+        self._read_restaurants_from_file(self._filepath)
 
     def add(self, restaurant):
         """adds restaurant to list of restaurants"""
@@ -88,13 +96,47 @@ class RestaurantManager:
             total_num_restaurants += 1
             avg_year_opened += restaurant.get_year_opened()
 
-        for fine_dining in self.get_all_by_type('fine dining'):
+        for fine_dining in self.get_all_by_type(FineDining.RESTAURANT_TYPE):
             num_fine_dining += 1
 
-        for fast_food in self.get_all_by_type('fast food'):
+        for fast_food in self.get_all_by_type(FastFood.RESTAURANT_TYPE):
             num_fast_food += 1
 
         avg_year_opened = avg_year_opened / total_num_restaurants
 
         stats = RestaurantStats(total_num_restaurants, num_fine_dining, num_fast_food, avg_year_opened)
         return stats
+
+    def _read_restaurants_from_file(self):
+        """reads restaurants from file and adds it to _restaurants"""
+        try:
+            f = open(self._filepath, 'r')
+        except FileNotFoundError:
+            f = open(self._filepath, 'w')
+            f.write('[]')
+            f.close()
+            f.open(self._filepath, 'r')
+
+        content = f.read()
+        f.close()
+
+        for item in content:
+            if item['type'] == FineDining.RESTAURANT_TYPE:
+                restaurant = FineDining(item['name'], item['num_employees'], item['location'], item['year_opened'], item['num_michelin_stars'], item['chef_name'])
+            else:
+                restaurant = FastFood(item['name'], item['num_employees'], item['location'], item['year_opened'], item['num_locations'], item['has_drivethrough'])
+
+            self.add(restaurant)
+
+
+    def _write_restaurants_to_file(self):
+        """writes restaurants to file"""
+        restaurants = []
+
+        for restaurant in self._restaurants:
+            restaurants.append(restaurant.to_dict())
+
+        f = open(self._filepath, "w")
+        f.write(json.dumps(restaurants))
+        f.close()
+

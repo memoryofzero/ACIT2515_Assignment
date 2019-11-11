@@ -1,6 +1,7 @@
 from restaurant_manager import RestaurantManager
 from fast_food import FastFood
 from fine_dining import FineDining
+from restaurant_stats import RestaurantStats
 import unittest
 import inspect
 
@@ -10,7 +11,7 @@ class TestRestaurantManager(unittest.TestCase):
     def setUp(self):
         """Create a test fixture and call logPoint before each test method is run"""
         self.logPoint()
-        self.restaurantManager = RestaurantManager()
+        self.restaurantManager = RestaurantManager('test.txt')
         self.assertIsNotNone(self.restaurantManager)
         self.fastFood = FastFood('Fast Food', 10, 'Burnaby', 2010, 20, True)
         self.fineDining = FineDining('Fine Dining', 15, 'Vancouver', 2014, 3, 'John')
@@ -95,6 +96,10 @@ class TestRestaurantManager(unittest.TestCase):
     def test_update_invalid_restaurant(self):
         """TRM-080A: Invalid restaurant"""
         self.assertRaisesRegex(ValueError, 'wrong value', self.restaurantManager.update, '')
+
+    def test_get_restaurant_stats(self):
+        """TRM-090A: Return RestaurantStats object"""
+        self.assertIsInstance(self.restaurantManager.get_restaurant_stats(), RestaurantStats, 'should return RestaurantStats object')
 
 if __name__ == '__main__':
     unittest.main()

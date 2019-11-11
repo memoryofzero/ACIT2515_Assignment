@@ -1,0 +1,9 @@
+{
+    "name": "Five Sails",
+    "num_employees": 50,
+    "location": "Vancouver",
+    "year_opened": 1986,
+    "num_michelin_stars": 2,
+    "chef_name": "Gerry",
+    "type": "fine dining"
+}
