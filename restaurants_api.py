@@ -12,19 +12,18 @@ restaurant_manager = RestaurantManager('db.json')
 @app.route('/restaurantmanager/restaurants', methods=['POST'])
 def add_restaurant():
     """adds restaurant to restaurant manager"""
-    contents = request.json
+    content = request.json
     try:
-        for content in contents:
-            if content['type'] == 'fast food':
-                restaurant = FastFood(content['name'], content['num_employees'], content['location'],
-                                      content['year_opened'], content['num_locations'], content['has_drivethrough'])
-                restaurant.set_id(content['id'])
-                restaurant_manager.add(restaurant)
-            elif content['type'] == 'fine dining':
-                restaurant = FineDining(content['name'], content['num_employees'], content['location'],
-                                      content['year_opened'], content['num_michelin_stars'], content['chef_name'])
-                restaurant.set_id(content['id'])
-                restaurant_manager.add(restaurant)
+        if content['type'] == 'fast food':
+            restaurant = FastFood(content['name'], content['num_employees'], content['location'],
+                                  content['year_opened'], content['num_locations'], content['has_drivethrough'])
+            restaurant.set_id(content['id'])
+            restaurant_manager.add(restaurant)
+        elif content['type'] == 'fine dining':
+            restaurant = FineDining(content['name'], content['num_employees'], content['location'],
+                                  content['year_opened'], content['num_michelin_stars'], content['chef_name'])
+            restaurant.set_id(content['id'])
+            restaurant_manager.add(restaurant)
         response = app.response_class(
             status=200
         )
@@ -39,19 +38,18 @@ def add_restaurant():
 @app.route('/restaurantmanager/restaurants/<int:id>', methods=['PUT'])
 def update_restaurant(id):
     """updats existing restaurant"""
-    contents = request.json
+    content = request.json
     try:
-        for content in contents:
-            if content['type'] == 'fast food':
-                restaurant = FastFood(content['name'], content['num_employees'], content['location'],
-                                      content['year_opened'], content['num_locations'], content['has_drivethrough'])
-                restaurant.set_id(id)
-                restaurant_manager.update(restaurant)
-            elif content['type'] == 'fine dining':
-                restaurant = FineDining(content['name'], content['num_employees'], content['location'],
-                                      content['year_opened'], content['num_michelin_stars'], content['chef_name'])
-                restaurant.set_id(id)
-                restaurant_manager.update(restaurant)
+        if content['type'] == 'fast food':
+            restaurant = FastFood(content['name'], content['num_employees'], content['location'],
+                                  content['year_opened'], content['num_locations'], content['has_drivethrough'])
+            restaurant.set_id(id)
+            restaurant_manager.update(restaurant)
+        elif content['type'] == 'fine dining':
+            restaurant = FineDining(content['name'], content['num_employees'], content['location'],
+                                  content['year_opened'], content['num_michelin_stars'], content['chef_name'])
+            restaurant.set_id(id)
+            restaurant_manager.update(restaurant)
         response = app.response_class(
             status=200
         )
