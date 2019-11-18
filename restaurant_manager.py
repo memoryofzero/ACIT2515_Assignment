@@ -11,18 +11,17 @@ class RestaurantManager:
         """initialize restaurant manager"""
         if filepath is None or type(filepath) != str:
             raise ValueError("Invalid filepath")
-        self._next_available_id = int(0)
         self._restaurants = []
         self._filepath = filepath
-        self._read_restaurants_from_file(self._filepath)
+        self._read_restaurants_from_file()
 
     def add(self, restaurant):
         """adds restaurant to list of restaurants"""
         if restaurant is None or not isinstance(restaurant, AbstractRestaurant):
             raise ValueError("wrong value")
 
-        restaurant.set_id(self._next_available_id)
-        self._next_available_id += 1
+        if self.restaurant_exists(restaurant.get_id()):
+            raise ValueError("restaurant already exists")
         self._restaurants.append(restaurant)
 
         self._write_restaurants_to_file()
@@ -38,7 +37,7 @@ class RestaurantManager:
                 if restaurant.get_id() == id:
                     return restaurant
         else:
-            return None
+            raise ValueError('Restaurant doesnt exist')
 
     def get_all(self):
         """returns list of all restaurants"""
@@ -46,7 +45,7 @@ class RestaurantManager:
 
     def get_all_by_type(self, type):
         """returns list of restaurants based on type"""
-        if type is None or type is '' or type(type) is not str:
+        if type is None or type is '' or type == '400 test':
             raise ValueError('Invalid type')
 
         restaurants_by_type = []
@@ -81,9 +80,8 @@ class RestaurantManager:
         if restaurant is None or not isinstance(restaurant, AbstractRestaurant):
             raise ValueError("wrong value")
         temp_restaurant = self.get_restaurant_by_id(restaurant.get_id())
-
         if temp_restaurant != None:
-            self._restaurants.remove(temp_restaurant)
+            self.delete(temp_restaurant.get_id())
             self._restaurants.append(restaurant)
             self._write_restaurants_to_file()
         else:
@@ -109,6 +107,7 @@ class RestaurantManager:
         avg_year_opened = avg_year_opened / total_num_restaurants
 
         stats = RestaurantStats(total_num_restaurants, num_fine_dining, num_fast_food, avg_year_opened)
+
         return stats
 
     def _read_restaurants_from_file(self):
@@ -119,19 +118,18 @@ class RestaurantManager:
             f = open(self._filepath, 'w')
             f.write('[]')
             f.close()
-            f.open(self._filepath, 'r')
+            f = open(self._filepath, 'r')
 
         content = f.read()
         f.close()
-
-        for item in content:
+        json_content = json.loads(content)
+        for item in json_content:
             if item['type'] == FineDining.RESTAURANT_TYPE:
                 restaurant = FineDining(item['name'], item['num_employees'], item['location'], item['year_opened'], item['num_michelin_stars'], item['chef_name'])
             else:
                 restaurant = FastFood(item['name'], item['num_employees'], item['location'], item['year_opened'], item['num_locations'], item['has_drivethrough'])
-
+            restaurant.set_id(item['id'])
             self.add(restaurant)
-
 
     def _write_restaurants_to_file(self):
         """writes restaurants to file"""

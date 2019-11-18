@@ -27,7 +27,7 @@ class FastFood(AbstractRestaurant):
 
     def get_type(self):
         """returns type of restaurant"""
-        return RESTAURANT_TYPE
+        return self.RESTAURANT_TYPE
 
     def get_details(self):
         """returns brief description"""
@@ -48,10 +48,12 @@ class FastFood(AbstractRestaurant):
 
     def to_dict(self):
         """returns a dictionary representation of the restaurant"""
-        fast_food = {"name": self._name,
-                     "num_employees": self._employees,
+        fast_food = {"id": self.get_id(),
+                    "name": self._name,
+                     "num_employees": self._num_employees,
                      "location": self._location,
-                     "year_opened": self.year_opened,
-                     "num_locations": self.num_locations,
-                     "has_drivethrough": self.has_drivethrough}
+                     "year_opened": self._year_opened,
+                     "num_locations": self._num_locations,
+                     "has_drivethrough": self._has_drivethrough,
+                     "type": self.get_type()}
         return fast_food

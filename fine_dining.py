@@ -28,7 +28,7 @@ class FineDining(AbstractRestaurant):
 
     def get_type(self):
         """returns type of restaurant"""
-        return RESTAURANT_TYPE
+        return self.RESTAURANT_TYPE
 
     def get_details(self):
         """returns brief description"""
@@ -41,10 +41,12 @@ class FineDining(AbstractRestaurant):
 
     def to_dict(self):
         """return a dictionary representation of the restaurant"""
-        fine_dining = {"name": self._name,
+        fine_dining = {"id": self.get_id(),
+                       "name": self._name,
                        "num_employees": self._num_employees,
                        "location": self._location,
                        "year_opened": self._year_opened,
-                       "num_michelin_stars": self._num_michelin,
-                       "chef_name": self._chef_name}
+                       "num_michelin_stars": self._num_michelin_stars,
+                       "chef_name": self._chef_name,
+                       "type": self.get_type()}
         return fine_dining

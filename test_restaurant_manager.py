@@ -2,19 +2,23 @@ from restaurant_manager import RestaurantManager
 from fast_food import FastFood
 from fine_dining import FineDining
 from restaurant_stats import RestaurantStats
+from unittest.mock import patch, mock_open
 import unittest
 import inspect
 
 class TestRestaurantManager(unittest.TestCase):
     """Unit tests for RestaurantManager class"""
 
+    @patch('builtins.open',mock_open(read_data='[]'))
     def setUp(self):
         """Create a test fixture and call logPoint before each test method is run"""
         self.logPoint()
-        self.restaurantManager = RestaurantManager('test.txt')
+        self.restaurantManager = RestaurantManager('test.json')
         self.assertIsNotNone(self.restaurantManager)
         self.fastFood = FastFood('Fast Food', 10, 'Burnaby', 2010, 20, True)
         self.fineDining = FineDining('Fine Dining', 15, 'Vancouver', 2014, 3, 'John')
+        self.fastFood.set_id(0)
+        self.fineDining.set_id(1)
         self.restaurantManager.add(self.fastFood)
         self.restaurantManager.add(self.fineDining)
 
@@ -30,13 +34,19 @@ class TestRestaurantManager(unittest.TestCase):
 
     def test_constructor(self):
         """TRM-010A: Valid Construction"""
-        test_manager = RestaurantManager()
+        test_manager = RestaurantManager('test.json')
         self.assertIsNotNone(test_manager, "RestaurantManager must be defined")
+
+    def test_invalid_constructor(self):
+        """TRM-010B: Invalid filepath"""
+        self.assertRaisesRegex(ValueError, 'Invalid filepath', RestaurantManager, None)
 
     def test_add(self):
         """TRM-020A: Valid add restaurant"""
         test_fine_dining = FineDining('Test', 20, 'YKK', 1980, 2, 'Bob')
+        test_fine_dining.set_id(2)
         test_fast_food = FastFood('Test', 10, 'YXX', 1990, 30, False)
+        test_fast_food.set_id(3)
         self.assertEquals(2, self.restaurantManager.add(test_fine_dining), 'Should return 2')
         self.assertEquals(3, self.restaurantManager.add(test_fast_food), 'Should return 3')
 
@@ -48,11 +58,14 @@ class TestRestaurantManager(unittest.TestCase):
         """TRM-030A: Valid get restaurant by id"""
         self.assertEquals(self.fastFood, self.restaurantManager.get_restaurant_by_id(0), 'Should return the fastFood object')
         self.assertEquals(self.fineDining, self.restaurantManager.get_restaurant_by_id(1), 'Should return the fineDining object')
-        self.assertEquals(None, self.restaurantManager.get_restaurant_by_id(5), 'Should return None')
 
     def test_get_restaurant_by_id_invalid_id(self):
         """TRM-030B: Invalid id"""
         self.assertRaisesRegex(ValueError, 'Invalid id', self.restaurantManager.get_restaurant_by_id, 'hi')
+
+    def test_get_restaurant_by_id_no_restaurant(self):
+        """TRM-030C: No restaurant with id"""
+        self.assertRaisesRegex(ValueError, 'Restaurant doesnt exist', self.restaurantManager.get_restaurant_by_id, 5)
 
     def test_get_all(self):
         """TRM-040A: Valid get all"""
@@ -100,6 +113,18 @@ class TestRestaurantManager(unittest.TestCase):
     def test_get_restaurant_stats(self):
         """TRM-090A: Return RestaurantStats object"""
         self.assertIsInstance(self.restaurantManager.get_restaurant_stats(), RestaurantStats, 'should return RestaurantStats object')
+
+    @patch('builtins.open', mock_open(read_data='[]'))
+    def test_read_restaurants_from_file(self):
+        """TRM-100A: check for read restaurants call"""
+        test_restaurant_manager = RestaurantManager('')
+        self.assertTrue(open.called)
+
+    @patch('builtins.open', mock_open(read_data='[]'))
+    def test_write_restaurants_to_file(self):
+        """TRM-11A: check for write restaurants call"""
+        self.restaurantManager.delete(0)
+        self.assertTrue(open.called)
 
 if __name__ == '__main__':
     unittest.main()

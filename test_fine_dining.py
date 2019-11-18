@@ -76,5 +76,9 @@ class TestFineDining(unittest.TestCase):
         """110A: Get valid details"""
         self.assertIn('(3 Michelin Stars) was opened in 2010', self.fineDining.get_details(), 'should return matching string')
 
+    def test_to_dict(self):
+        """120A: Get valid dict"""
+        self.assertIsInstance(self.fineDining.to_dict(), dict)
+
 if __name__ == '__main__':
     unittest.main()
