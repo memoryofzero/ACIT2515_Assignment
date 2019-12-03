@@ -7,7 +7,7 @@ import json
 
 app = Flask(__name__)
 
-restaurant_manager = RestaurantManager('db.json')
+restaurant_manager = RestaurantManager('restaurants.sqlite')
 
 @app.route('/restaurantmanager/restaurants', methods=['POST'])
 def add_restaurant():
@@ -17,12 +17,12 @@ def add_restaurant():
         if content['type'] == 'fast food':
             restaurant = FastFood(content['name'], content['num_employees'], content['location'],
                                   content['year_opened'], content['num_locations'], content['has_drivethrough'])
-            restaurant.set_id(content['id'])
+            restaurnt.id = content['id']
             restaurant_manager.add(restaurant)
         elif content['type'] == 'fine dining':
             restaurant = FineDining(content['name'], content['num_employees'], content['location'],
                                   content['year_opened'], content['num_michelin_stars'], content['chef_name'])
-            restaurant.set_id(content['id'])
+            restaurant.id = content['id']
             restaurant_manager.add(restaurant)
         response = app.response_class(
             status=200
@@ -43,12 +43,12 @@ def update_restaurant(id):
         if content['type'] == 'fast food':
             restaurant = FastFood(content['name'], content['num_employees'], content['location'],
                                   content['year_opened'], content['num_locations'], content['has_drivethrough'])
-            restaurant.set_id(id)
+            restaurant.id = id
             restaurant_manager.update(restaurant)
         elif content['type'] == 'fine dining':
             restaurant = FineDining(content['name'], content['num_employees'], content['location'],
                                   content['year_opened'], content['num_michelin_stars'], content['chef_name'])
-            restaurant.set_id(id)
+            restaurant.id = id
             restaurant_manager.update(restaurant)
         response = app.response_class(
             status=200
