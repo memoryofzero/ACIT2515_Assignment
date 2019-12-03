@@ -4,3 +4,5 @@ __pycache__/
 ass3/
 db/
 *.json
+*.sqlite
+*.sql
