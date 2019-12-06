@@ -16,6 +16,7 @@ class AddFastFoodPopup(tk.Frame):
 
         tk.Label(self, text="ID:").grid(row=1, column=1)
         self._id = tk.Entry(self)
+        self._id.grid(row=1, column=2)
         tk.Label(self, text="Name:").grid(row=2, column=1)
         self._name = tk.Entry(self)
         self._name.grid(row=2, column=2)
@@ -31,9 +32,10 @@ class AddFastFoodPopup(tk.Frame):
         tk.Label(self, text="Number of Locations:").grid(row=6, column=1)
         self._num_locations = tk.Entry(self)
         self._num_locations.grid(row=6, column=2)
+        tk.Label(self, text="Has drive through:").grid(row=7, column=1)
         self._has_drivethrough = tk.BooleanVar()
-        tk.Radiobutton(self, text="Yes", variable=self._has_drivethrough, value=True).grid(row=7, column=1)
-        tk.Radiobutton(self, text="No", variable=self._has_drivethrough, value=False).grid(row=7, column=2)
+        tk.Radiobutton(self, text="Yes", variable=self._has_drivethrough, value=True).grid(row=7, column=2)
+        tk.Radiobutton(self, text="No", variable=self._has_drivethrough, value=False).grid(row=7, column=3)
         tk.Button(self, text="Submit", command=self._submit_cb).grid(row=8, column=1)
         tk.Button(self, text="Close", command=self._close_cb).grid(row=8, column=2)
 
@@ -53,9 +55,13 @@ class AddFastFoodPopup(tk.Frame):
             messagebox.showerror("Error", "Number of employees must be a valid integer")
             return
 
+        if re.match("^\d+$", self._id.get()) is None:
+            messagebox.showerror("Error", "ID must be a valid integer")
+            return
+
         # Create the dictionary for the JSON request body
         data = {}
-        data['id'] = self._id.get()
+        data['id'] = int(self._id.get())
         data['name'] = self._name.get()
         data['num_employees'] = int(self._num_employees.get())
         data['location'] = self._location.get()

@@ -42,10 +42,12 @@ class RestaurantManager:
         if self.restaurant_exists(id):
             session = self._db_session()
 
-            restaurant = session.query(FastFood).filter(FastFood.id == id).first()
+            restaurant = session.query(AbstractRestaurant).filter(AbstractRestaurant.id == id).first()
 
-            if restaurant == None:
-                restaurant = session.query(FineDining).filter(FastFood.id == id).first()
+            if restaurant.restaurant_type == FastFood.RESTAURANT_TYPE:
+                restaurant = session.query(FastFood).filter(FastFood.id == id).first()
+            else:
+                restaurant = session.query(FineDining).filter(FineDining.id == id).first()
 
             session.close()
 
@@ -67,10 +69,17 @@ class RestaurantManager:
 
         session = self._db_session()
 
-        if restaurant_type == FastFood.RESTAURANT_TYPE:
-            restaurants = session.query(FastFood).all()
-        else:
-            restaurants = session.query(FineDining).all()
+        restaurants = []
+        all_restaurants = session.query(AbstractRestaurant).filter(AbstractRestaurant.restaurant_type == restaurant_type).all()
+
+        for restaurant in all_restaurants:
+            if restaurant_type == FastFood.RESTAURANT_TYPE:
+                restaurants.append(session.query(FastFood).filter(FastFood.id == restaurant.id).first())
+            elif restaurant_type == FineDining.RESTAURANT_TYPE:
+                restaurants.append(session.query(FineDining).filter(FineDining.id == restaurant.id).first())
+            else:
+                session.close()
+                raise ValueError('Unsupported type')
 
         session.close()
 
@@ -83,11 +92,11 @@ class RestaurantManager:
 
         session = self._db_session()
 
-        device = session.query(AbstractRestaurant).filter(AbstractRestaurant.id == id).first()
+        restaurant = session.query(AbstractRestaurant).filter(AbstractRestaurant.id == id).first()
 
         session.close()
 
-        if device is None:
+        if restaurant is None:
             return False
 
         return True

@@ -17,9 +17,9 @@ def add_restaurant():
         if content['type'] == 'fast food':
             restaurant = FastFood(content['name'], content['num_employees'], content['location'],
                                   content['year_opened'], content['num_locations'], content['has_drivethrough'])
-            restaurnt.id = content['id']
+            restaurant.id = content['id']
             restaurant_manager.add(restaurant)
-        elif content['type'] == 'fine dining':
+        else:
             restaurant = FineDining(content['name'], content['num_employees'], content['location'],
                                   content['year_opened'], content['num_michelin_stars'], content['chef_name'])
             restaurant.id = content['id']
@@ -45,7 +45,7 @@ def update_restaurant(id):
                                   content['year_opened'], content['num_locations'], content['has_drivethrough'])
             restaurant.id = id
             restaurant_manager.update(restaurant)
-        elif content['type'] == 'fine dining':
+        else:
             restaurant = FineDining(content['name'], content['num_employees'], content['location'],
                                   content['year_opened'], content['num_michelin_stars'], content['chef_name'])
             restaurant.id = id
@@ -118,6 +118,7 @@ def get_all_restaurants_by_type(type):
     """return all restaurants by type"""
     try:
         restaurants = [ restaurant.to_dict() for restaurant in restaurant_manager.get_all_by_type(type) ]
+        print(restaurants)
         response = app.response_class(
             status=200,
             response=json.dumps(restaurants),

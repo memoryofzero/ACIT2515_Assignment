@@ -16,6 +16,7 @@ class AddFineDiningPopup(tk.Frame):
 
         tk.Label(self, text="ID:").grid(row=1, column=1)
         self._id = tk.Entry(self)
+        self._id.grid(row=1, column=2)
         tk.Label(self, text="Name:").grid(row=2, column=1)
         self._name = tk.Entry(self)
         self._name.grid(row=2, column=2)
@@ -47,22 +48,27 @@ class AddFineDiningPopup(tk.Frame):
             return
 
         if re.match("^\d+$", self._num_michelin_stars.get()) is None:
-            messagebox.showerror("Error", "Number of locations must be a valid integer")
+            messagebox.showerror("Error", "Number of michelin stars must be a valid integer")
             return
 
         if re.match("^\d+$", self._num_employees.get()) is None:
             messagebox.showerror("Error", "Number of employees must be a valid integer")
             return
 
+        if re.match("^\d+$", self._id.get()) is None:
+            messagebox.showerror("Error", "ID must be a valid integer")
+            return
+
         # Create the dictionary for the JSON request body
         data = {}
-        data['id'] = self._id.get()
+        data['id'] = int(self._id.get())
         data['name'] = self._name.get()
         data['num_employees'] = int(self._num_employees.get())
         data['location'] = self._location.get()
         data['year_opened'] = int(self._year_opened.get())
         data['num_michelin_stars'] = int(self._num_michelin_stars.get())
         data['chef_name'] = self._chef_name.get()
+        data['type'] = "fine dining"
 
         # Implement your code here
         headers = {"content-type": "application/json"}
