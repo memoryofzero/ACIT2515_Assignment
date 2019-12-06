@@ -152,7 +152,7 @@ class RestaurantManager:
 
         avg_year_opened = avg_year_opened / total_num_restaurants
 
-        stats = RestaurantStats(total_num_restaurants, num_fine_dining, num_fast_food, avg_year_opened)
+        stats = RestaurantStats(total_num_restaurants, num_fine_dining, num_fast_food, int(avg_year_opened))
 
         return stats
 

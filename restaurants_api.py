@@ -118,7 +118,6 @@ def get_all_restaurants_by_type(type):
     """return all restaurants by type"""
     try:
         restaurants = [ restaurant.to_dict() for restaurant in restaurant_manager.get_all_by_type(type) ]
-        print(restaurants)
         response = app.response_class(
             status=200,
             response=json.dumps(restaurants),

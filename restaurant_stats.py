@@ -16,7 +16,7 @@ class RestaurantStats:
             raise ValueError("Invalid completed fast good")
         self._num_fast_food = num_fast_food
 
-        if avg_year_opened is None or type(avg_year_opened) != float:
+        if avg_year_opened is None or type(avg_year_opened) != int:
             raise ValueError("Invalid completed repairs value")
         self._avg_year_opened = avg_year_opened
 

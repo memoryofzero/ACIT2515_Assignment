@@ -17,15 +17,32 @@ class MainAppController(tk.Frame):
         """ Initialize Main Application """
         tk.Frame.__init__(self, parent)
 
+        self._total_num_restaurants = tk.StringVar(self)
+        self._avg_year_opened = tk.StringVar(self)
+        self._num_fast_food = tk.StringVar(self)
+        self._num_fine_dining = tk.StringVar(self)
+        self._total_num_restaurants.set('0')
+        self._avg_year_opened.set('0')
+        self._num_fast_food.set('0')
+        self._num_fine_dining.set('0')
+
         tk.Label(self, text="Restaurants").grid(row=2, column=1, columnspan=4)
         self._restaurants_listbox = tk.Listbox(self, width=50)
-        self._restaurants_listbox.grid(row=3, column=1, columnspan=4)
+        self._restaurants_listbox.grid(row=3, column=1, columnspan=4, rowspan=3)
 
         self._restaurant_type = tk.StringVar()
         self._restaurant_type.set('fast food')
         tk.Radiobutton(self, text="Fast Food", variable=self._restaurant_type, value='fast food', command=self._update_restaurant_list).grid(row=1, column=1, columnspan=2)
         tk.Radiobutton(self, text="Fine Dining", variable=self._restaurant_type, value='fine dining', command=self._update_restaurant_list).grid(row=1, column=3, columnspan=2)
 
+        tk.Label(self, text="Total Restaurants: ").grid(row=2, column=5)
+        tk.Label(self, textvar=self._total_num_restaurants).grid(row=2, column=6)
+        tk.Label(self, text="Avg. Year Opened: ").grid(row=3, column=5)
+        tk.Label(self, textvar=self._avg_year_opened).grid(row=3, column=6)
+        tk.Label(self, text="Fast Food Restaurants: ").grid(row=4, column=5)
+        tk.Label(self, textvar=self._num_fast_food).grid(row=4, column=6)
+        tk.Label(self, text="Fine Dining Restaurants: ").grid(row=5, column=5)
+        tk.Label(self, textvar=self._num_fine_dining).grid(row=5, column=6)
         tk.Button(self, text="Add", command=self._add).grid(row=6, column=1)
         tk.Button(self, text="Update", command=self._update).grid(row=6, column=2)
         tk.Button(self, text="Details", command=self._details).grid(row=6, column=3)
@@ -33,6 +50,7 @@ class MainAppController(tk.Frame):
         tk.Button(self, text="Remove Restaurant", command=self._remove_restaurant).grid(row=6, column=4)
 
         self._update_restaurant_list()
+        self._update_restaurant_stats()
 
 
     def _details(self):
@@ -54,6 +72,7 @@ class MainAppController(tk.Frame):
     def _close(self):
         self._popup_win.destroy()
         self._update_restaurant_list()
+        self._update_restaurant_stats()
 
     def _update(self):
         try:
@@ -74,6 +93,7 @@ class MainAppController(tk.Frame):
     def _close_remove_restaurant_cb(self):
         self._popup_win.destroy()
         self._update_restaurant_list()
+        self._update_restaurant_stats()
 
     def _update_restaurant_list(self):
         """ Update the List of Restaurants Descriptions """
@@ -86,7 +106,18 @@ class MainAppController(tk.Frame):
         for desc in descs:
             self._restaurants_listbox.insert(tk.END, str(desc['id']) + ' ' + desc['name'])
 
+    def _update_restaurant_stats(self):
+        """ Update the restaurant stats """
+        response = requests.get("http://127.0.0.1:5000/restaurantmanager/restaurants/stats")
+        if response.status_code != 200:
+            return
+        stats = response.json()
+        self._total_num_restaurants.set(stats['total_num_restaurants'])
+        self._avg_year_opened.set(stats['avg_year_opened'])
+        self._num_fast_food.set(stats['num_fast_food'])
+        self._num_fine_dining.set(stats['num_fine_dining'])
 
+        self.update()
 
 
 if __name__ == "__main__":
